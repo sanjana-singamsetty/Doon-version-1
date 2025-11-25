@@ -161,11 +161,11 @@ export default function ScreenThree() {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   return (
-    <section className="relative w-full bg-[#E8F4F6] py-12 sm:py-16 md:py-20">
+    <section className="w-full bg-[#E8F4F6] py-12 sm:py-16 md:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Yellow Block Container - Positioned at bottom like academics page */}
-        <div className="flex justify-start pb-6 md:pb-8 lg:pb-10">
-          <div className="bg-[#E5B93C] rounded-lg p-6 md:p-10 max-w-5xl w-full shadow-2xl">
+        {/* Yellow Block Container */}
+     {/* Yellow Block Container */}
+<div className="bg-[#E5B93C] rounded-t-md relative overflow-hidden p-6 md:p-10">
   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
     {/* Left Side - Text Content */}
     <motion.div
@@ -183,7 +183,7 @@ export default function ScreenThree() {
         transition={{ duration: 0.6, delay: 0.1 }}
         className="ttext-2xl sm:text-3xl md:text-4xl lg:text-xl font-display font-bold text-[#1C2C5B] leading-tight"
       >
-        Begin Your Child's Journey Toward a Bright Future
+        Begin Your Child&apos;s Journey Toward a Bright Future
         <span className="text-2xl sm:text-3xl md:text-4xl lg:text-xl">
           IB & CBSE Pathways Now Open in Hyderabad
         </span>
@@ -249,8 +249,25 @@ export default function ScreenThree() {
 
   </div>
 
-          </div>
-        </div>
+  {/* Artboard Image at Bottom of Yellow Box */}
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.6, delay: 0.3 }}
+    className="absolute bottom-0 left-0 right-0 w-full"
+  >
+    <Image
+      src="/images/artboard.png"
+      alt="Decorative Artwork"
+      width={1400}
+      height={200}
+      className="w-full h-auto object-cover rounded-b-md"
+      priority={false}
+    />
+  </motion.div>
+</div>
+
       </div>
     </section>
   );

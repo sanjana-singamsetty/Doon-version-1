@@ -390,7 +390,7 @@ export default function AdmissionsPage() {
             className="learning-content"
           >
             <motion.h2 variants={item} className="learning-title">
-              Child's Learning Journey Starts Here
+              Child&apos;s Learning Journey Starts Here
             </motion.h2>
 
             <div className="learning-grid">
@@ -409,7 +409,7 @@ export default function AdmissionsPage() {
               {/* Right Side - Info */}
               <motion.div variants={item} className="learning-info">
                 <p className="learning-text">
-                  We're excited to welcome students into our first academic year. Our admissions process is <span className="underline font-semibold">transparent</span>, <span className="underline font-semibold">personalized</span>, and designed to ensure a great fit between the student and the DIS learning community.
+                  We&apos;re excited to welcome students into our first academic year. Our admissions process is <span className="underline font-semibold">transparent</span>, <span className="underline font-semibold">personalized</span>, and designed to ensure a great fit between the student and the DIS learning community.
                 </p>
 
                 <div className="learning-actions">

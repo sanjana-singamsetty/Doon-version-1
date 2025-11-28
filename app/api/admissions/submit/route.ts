@@ -66,12 +66,41 @@ async function getSheetsClient() {
     }
 
     // Parse the service account key JSON
-    const credentials = JSON.parse(serviceAccountKey);
+    let credentials;
+    try {
+      credentials = JSON.parse(serviceAccountKey);
+    } catch (parseError) {
+      console.error("Failed to parse GOOGLE_SERVICE_ACCOUNT_KEY JSON:", parseError);
+      throw new Error("Invalid JSON format in GOOGLE_SERVICE_ACCOUNT_KEY");
+    }
+    
+    // Fix private key: ensure newlines are properly formatted
+    // Handle both escaped newlines (\n) and actual newlines
+    let privateKey = credentials.private_key;
+    if (!privateKey) {
+      throw new Error("private_key not found in service account credentials");
+    }
+    
+    // Replace escaped newlines with actual newlines
+    // This handles the case where JSON.stringify or env var storage escaped them
+    privateKey = privateKey.replace(/\\n/g, '\n');
+    
+    // Additional check: if still no actual newlines, try another approach
+    if (!privateKey.includes('\n') && privateKey.includes('\\n')) {
+      // Double-escaped case
+      privateKey = privateKey.replace(/\\\\n/g, '\n');
+    }
+    
+    // Validate the key format
+    if (!privateKey.includes('BEGIN PRIVATE KEY') || !privateKey.includes('END PRIVATE KEY')) {
+      console.error("Private key format appears incorrect - missing BEGIN/END markers");
+      throw new Error("Invalid private key format");
+    }
     
     // Create JWT client for service account
     const auth = new google.auth.JWT({
       email: credentials.client_email,
-      key: credentials.private_key,
+      key: privateKey,
       scopes: ['https://www.googleapis.com/auth/spreadsheets']
     });
 

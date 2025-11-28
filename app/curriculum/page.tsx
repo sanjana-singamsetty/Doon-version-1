@@ -126,7 +126,7 @@ export default function CurriculumPage() {
                 reduceMotion ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }
               }
               transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-              className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl font-display font-bold text-[#1C2C5B] leading-tight mb-4"
+              className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-display font-bold text-[#1C2C5B] leading-tight mb-4"
             >
               Learning That Inspires Mind and Heart
             </motion.h1>
@@ -296,7 +296,7 @@ export default function CurriculumPage() {
                 }
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-3xl sm:text-4xl md:text-4xl font-display font-bold text-[#1C2C5B] leading-tight"
+                className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-[#1C2C5B] leading-tight"
               >
                 Curriculum Resources
               </motion.h2>

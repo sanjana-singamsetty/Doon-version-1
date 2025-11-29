@@ -67,7 +67,7 @@ export function EnquiryFormSection() {
   const validateForm = (): boolean => {
     const newErrors: Partial<EnquiryFormData> = {};
 
-    if (!formData.childName.trim()) newErrors.childName = "Child's name is required";
+    if (!formData.childName.trim()) newErrors.childName = "Child&apos;s name is required";
     if (!formData.grade) newErrors.grade = "Grade is required";
     if (!formData.boardingType) newErrors.boardingType = "Boarding type is required";
 
@@ -148,7 +148,7 @@ export function EnquiryFormSection() {
 
                 {/* Child Name */}
                 <label className="flex flex-col">
-                  <span className="text-white text-sm mb-1.5 font-medium">Child's name<span className="text-yellow-400 ml-1">*</span></span>
+                  <span className="text-white text-sm mb-1.5 font-medium">Child&apos;s name<span className="text-yellow-400 ml-1">*</span></span>
                   <input
                     name="childName"
                     value={formData.childName}

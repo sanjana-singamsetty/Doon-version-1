@@ -17,12 +17,13 @@ const navItems: NavItem[] = [
     label: "Admissions", 
     href: "/admissions",
     dropdown: [
+      { label: "Admission Page", href: "/admissions" },
       { label: "Admission Login", href: "/admissions/login" },
       { label: "Admission Form", href: "/admissions/application" },
     ]
   },
   { label: "Curriculum", href: "/curriculum" },
-  { label: "Contact", href: "/contact" },
+  // { label: "Contact", href: "/contact" },
 ]
 
 export function Header() {
@@ -30,6 +31,7 @@ export function Header() {
   const [openDropdown, setOpenDropdown] = React.useState<string | null>(null)
   const { scrollY } = useScroll()
   const lastScrollY = React.useRef(0)
+  const dropdownRefs = React.useRef<{ [key: string]: HTMLDivElement | null }>({})
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     if (latest > lastScrollY.current && latest > 100) {
@@ -41,6 +43,41 @@ export function Header() {
     }
     lastScrollY.current = latest
   })
+
+  // Close dropdown when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node
+      let clickedOutside = true
+
+      // Check if click was inside any dropdown
+      Object.values(dropdownRefs.current).forEach((ref) => {
+        if (ref && ref.contains(target)) {
+          clickedOutside = false
+        }
+      })
+
+      if (clickedOutside) {
+        setOpenDropdown(null)
+      }
+    }
+
+    if (openDropdown) {
+      // Use a small timeout to let link clicks process first
+      const timeoutId = setTimeout(() => {
+        document.addEventListener("click", handleClickOutside)
+      }, 200)
+
+      return () => {
+        clearTimeout(timeoutId)
+        document.removeEventListener("click", handleClickOutside)
+      }
+    }
+  }, [openDropdown])
+
+  const handleDropdownToggle = (itemLabel: string) => {
+    setOpenDropdown(openDropdown === itemLabel ? null : itemLabel)
+  }
 
   return (
     <motion.header
@@ -62,17 +99,31 @@ export function Header() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.3 }}
                 className="relative"
-                onMouseEnter={() => item.dropdown && setOpenDropdown(item.label)}
-                onMouseLeave={() => setOpenDropdown(null)}
               >
                 {item.dropdown ? (
-                  <>
+                  <div 
+                    className="relative" 
+                    ref={(el) => {
+                      if (openDropdown === item.label) {
+                        dropdownRefs.current[item.label] = el
+                      }
+                    }}
+                  >
                     <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDropdownToggle(item.label)
+                      }}
                       className="text-gray-900 font-semibold text-base sm:text-lg hover:text-blue-700 transition-colors duration-200 relative group flex items-center gap-1"
+                      type="button"
+                      aria-expanded={openDropdown === item.label}
+                      aria-haspopup="true"
                     >
                       {item.label}
                       <svg
-                        className="w-4 h-4 transition-transform duration-200"
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          openDropdown === item.label ? "rotate-180" : ""
+                        }`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -92,21 +143,24 @@ export function Header() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
-                        className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                        className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-[60]"
+                        onClick={(e) => e.stopPropagation()}
                       >
                         {item.dropdown.map((dropdownItem) => (
                           <Link
                             key={dropdownItem.href}
                             href={dropdownItem.href}
                             className="block px-4 py-2 text-gray-900 font-medium text-sm hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200"
-                            onClick={() => setOpenDropdown(null)}
+                            onClick={() => {
+                              setOpenDropdown(null)
+                            }}
                           >
                             {dropdownItem.label}
                           </Link>
                         ))}
                       </motion.div>
                     )}
-                  </>
+                  </div>
                 ) : (
                   <Link
                     href={item.href}

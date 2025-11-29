@@ -112,12 +112,12 @@ async function getSheetsClient() {
   }
 }
 
-async function ensureHeadersExist(sheets: any, spreadsheetId: string) {
+async function ensureHeadersExist(sheets: any, spreadsheetId: string, sheetName: string = 'admission-form') {
   try {
     // Check if sheet has data
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId,
-      range: 'A1:Z1',
+      range: `${sheetName}!A1:AZ1`,
     });
     
     const existingValues = response.data.values;
@@ -126,9 +126,9 @@ async function ensureHeadersExist(sheets: any, spreadsheetId: string) {
     if (!existingValues || existingValues.length === 0 || 
         JSON.stringify(existingValues[0]) !== JSON.stringify(COLUMN_HEADERS)) {
       // Add headers
-      await sheets.spreadsheets.values.append({
+      await sheets.spreadsheets.values.update({
         spreadsheetId,
-        range: 'A1',
+        range: `${sheetName}!A1`,
         valueInputOption: 'RAW',
         requestBody: {
           values: [COLUMN_HEADERS],
@@ -146,7 +146,10 @@ export async function POST(request: NextRequest) {
     const formData = await request.json();
 
     // Get Google Sheet ID from environment variable
-    const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID;
+    // Default to the same sheet used for enquiries if GOOGLE_SHEET_ID is not set
+    const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID || "12CgHpE9x8TsuoosG3KctIbrM941N1eOCKmgLwPRTPbs";
+    // Get sheet tab name (defaults to 'admission-form', but can be overridden via env var)
+    const SHEET_NAME = process.env.ADMISSION_SHEET_NAME || 'admission-form';
 
     if (!SPREADSHEET_ID) {
       return NextResponse.json(
@@ -161,7 +164,7 @@ export async function POST(request: NextRequest) {
     const sheets = await getSheetsClient();
 
     // Ensure headers exist (only runs if sheet is empty)
-    await ensureHeadersExist(sheets, SPREADSHEET_ID);
+    await ensureHeadersExist(sheets, SPREADSHEET_ID, SHEET_NAME);
 
     // Format the data for Google Sheets
     // Prepare row data with all fields
@@ -226,7 +229,7 @@ export async function POST(request: NextRequest) {
     // Use Google Sheets API v4 to append data
     const result = await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: 'A:A',
+      range: `${SHEET_NAME}!A:A`,
       valueInputOption: 'RAW',
       requestBody: {
         values: values,

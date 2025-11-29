@@ -474,7 +474,7 @@ export default function AdmissionsPage() {
 
         if (response.ok) {
           // Redirect to thank you page
-          router.push("/admissions/thank-you");
+          window.location.href = "/admissions/thank-you";
         } else {
           alert(`Error submitting form: ${result.error || "Unknown error"}`);
         }

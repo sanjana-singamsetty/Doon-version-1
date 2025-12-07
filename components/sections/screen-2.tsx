@@ -75,7 +75,7 @@ export function WhyDisSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-base sm:text-lg text-white leading-relaxed"
+                className="text-lg sm:text-xl md:text-2xl text-white leading-relaxed font-display"
               >
                 A legacy of excellence from{" "}
                 <span className="text-yellow-400 font-semibold">Dehradun</span>, now in{" "}

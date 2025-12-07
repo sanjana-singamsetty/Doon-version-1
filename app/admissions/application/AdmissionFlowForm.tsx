@@ -45,7 +45,6 @@ const gradeOptions = [
   "Grade 10",
 ];
 const boardOptions = ["CBSE", "IB"];
-const nationalityOptions = ["Indian", "American", "British", "Other"];
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 const countryOptions = ["India", "United States", "United Kingdom", "United Arab Emirates", "Other"];
 
@@ -218,16 +217,12 @@ export default function AdmissionFlowForm() {
         <div className="form-grid">
           <label>
             <span>Nationality</span>
-            <select name="nationality" value={formData.nationality} onChange={handleInputChange}>
-              <option value="" disabled>
-                Select Nationality
-              </option>
-              {nationalityOptions.map((nation) => (
-                <option key={nation} value={nation}>
-                  {nation}
-                </option>
-              ))}
-            </select>
+            <input
+              name="nationality"
+              value={formData.nationality}
+              onChange={handleInputChange}
+              placeholder="Enter Nationality"
+            />
           </label>
           <label>
             <span>Aadhar Card No</span>

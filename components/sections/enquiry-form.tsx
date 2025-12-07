@@ -182,56 +182,37 @@ export function EnquiryFormSection() {
                   </label>
 
                   <label className="flex flex-col">
-                    <span className="text-white text-sm mb-1.5 font-medium">Boarding Type<span className="text-yellow-400 ml-1">*</span></span>
-                    <select
-                      name="boardingType"
-                      value={formData.boardingType}
-                      onChange={handleInputChange}
-                      className={`w-full rounded-[0.9rem] border px-4 py-[0.95rem] pr-10 text-base font-medium bg-white/10 border-white/30 text-white transition-all appearance-none cursor-pointer focus:border-[#F4C23F] focus:outline-none focus:bg-white/15 focus:shadow-[0_0_0_3px_rgba(244,194,63,0.15)] bg-[url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 12 12%22%3E%3Cpath fill=%22white%22 d=%22M6 9L1 4h10z%22/%3E%3C/svg%3E')] bg-[length:12px_12px] bg-[right_1rem_center] bg-no-repeat ${
-                        !formData.boardingType ? "text-white/50" : "text-white"
-                      } ${errors.boardingType ? "border-red-400 bg-red-500/10" : ""}`}
-                    >
-                      <option value="" disabled className="bg-[#15275A] text-white">Select Type</option>
-                      {boardingTypeOptions.map((t) => (
-                        <option key={t} className="bg-[#15275A] text-white" value={t}>{t}</option>
-                      ))}
-                    </select>
-                    {errors.boardingType && <span className="text-red-400 text-xs mt-1.5 font-medium">{errors.boardingType}</span>}
+                  <span className="text-white text-sm mb-1.5 font-medium">Mobile Number<span className="text-yellow-400 ml-1">*</span></span>
+                  <input
+                    name="mobile"
+                    value={formData.mobile}
+                    onChange={handleInputChange}
+                    placeholder="Enter mobile number"
+                    inputMode="numeric"
+                    className={`w-full rounded-[0.9rem] border px-4 py-[0.95rem] text-base font-medium bg-white/10 border-white/30 text-white placeholder-white/50 transition-all focus:border-[#F4C23F] focus:outline-none focus:bg-white/15 focus:shadow-[0_0_0_3px_rgba(244,194,63,0.15)] ${
+                      errors.mobile ? "border-red-400 bg-red-500/10" : ""
+                    }`}
+                  />
+                  {errors.mobile && <span className="text-red-400 text-xs mt-1.5 font-medium">{errors.mobile}</span>}
                   </label>
                 </div>
 
-                {/* Email & Mobile */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <label className="flex flex-col">
-                    <span className="text-white text-sm mb-1.5 font-medium">E-mail ID<span className="text-yellow-400 ml-1">*</span></span>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      placeholder="Enter email address"
-                      className={`w-full rounded-[0.9rem] border px-4 py-[0.95rem] text-base font-medium bg-white/10 border-white/30 text-white placeholder-white/50 transition-all focus:border-[#F4C23F] focus:outline-none focus:bg-white/15 focus:shadow-[0_0_0_3px_rgba(244,194,63,0.15)] ${
-                        errors.email ? "border-red-400 bg-red-500/10" : ""
-                      }`}
-                    />
-                    {errors.email && <span className="text-red-400 text-xs mt-1.5 font-medium">{errors.email}</span>}
-                  </label>
+                {/* Email */}
+                <label className="flex flex-col">
+                  <span className="text-white text-sm mb-1.5 font-medium">E-mail ID<span className="text-yellow-400 ml-1">*</span></span>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="Enter email address"
+                    className={`w-full rounded-[0.9rem] border px-4 py-[0.95rem] text-base font-medium bg-white/10 border-white/30 text-white placeholder-white/50 transition-all focus:border-[#F4C23F] focus:outline-none focus:bg-white/15 focus:shadow-[0_0_0_3px_rgba(244,194,63,0.15)] ${
+                      errors.email ? "border-red-400 bg-red-500/10" : ""
+                    }`}
+                  />
+                  {errors.email && <span className="text-red-400 text-xs mt-1.5 font-medium">{errors.email}</span>}
+                </label>
 
-                  <label className="flex flex-col">
-                    <span className="text-white text-sm mb-1.5 font-medium">Mobile Number<span className="text-yellow-400 ml-1">*</span></span>
-                    <input
-                      name="mobile"
-                      value={formData.mobile}
-                      onChange={handleInputChange}
-                      placeholder="Enter mobile number"
-                      inputMode="numeric"
-                      className={`w-full rounded-[0.9rem] border px-4 py-[0.95rem] text-base font-medium bg-white/10 border-white/30 text-white placeholder-white/50 transition-all focus:border-[#F4C23F] focus:outline-none focus:bg-white/15 focus:shadow-[0_0_0_3px_rgba(244,194,63,0.15)] ${
-                        errors.mobile ? "border-red-400 bg-red-500/10" : ""
-                      }`}
-                    />
-                    {errors.mobile && <span className="text-red-400 text-xs mt-1.5 font-medium">{errors.mobile}</span>}
-                  </label>
-                </div>
 
                 {/* Message */}
                 <label className="flex flex-col">

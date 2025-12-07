@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import "./AdmissionFlow.css";
@@ -169,6 +169,15 @@ export default function AdmissionsPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [photoPreviews, setPhotoPreviews] = useState<{
+    studentPhoto: string | null;
+    fatherPhoto: string | null;
+    motherPhoto: string | null;
+  }>({
+    studentPhoto: null,
+    fatherPhoto: null,
+    motherPhoto: null,
+  });
 
   const handleInputChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -222,8 +231,19 @@ export default function AdmissionsPage() {
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
     const fieldName = event.target.name;
+    
     if (fieldName === "studentPhoto") {
+      // Clean up previous preview URL
+      if (photoPreviews.studentPhoto) {
+        URL.revokeObjectURL(photoPreviews.studentPhoto);
+      }
+      
       setFormData((prev) => ({ ...prev, studentPhoto: file }));
+      setPhotoPreviews((prev) => ({
+        ...prev,
+        studentPhoto: file ? URL.createObjectURL(file) : null,
+      }));
+      
       if (errors.studentPhoto) {
         setErrors((prev) => {
           const newErrors = { ...prev };
@@ -232,7 +252,17 @@ export default function AdmissionsPage() {
         });
       }
     } else if (fieldName === "fatherPhoto") {
+      // Clean up previous preview URL
+      if (photoPreviews.fatherPhoto) {
+        URL.revokeObjectURL(photoPreviews.fatherPhoto);
+      }
+      
       setFormData((prev) => ({ ...prev, fatherPhoto: file }));
+      setPhotoPreviews((prev) => ({
+        ...prev,
+        fatherPhoto: file ? URL.createObjectURL(file) : null,
+      }));
+      
       if (errors.fatherPhoto) {
         setErrors((prev) => {
           const newErrors = { ...prev };
@@ -241,7 +271,17 @@ export default function AdmissionsPage() {
         });
       }
     } else if (fieldName === "motherPhoto") {
+      // Clean up previous preview URL
+      if (photoPreviews.motherPhoto) {
+        URL.revokeObjectURL(photoPreviews.motherPhoto);
+      }
+      
       setFormData((prev) => ({ ...prev, motherPhoto: file }));
+      setPhotoPreviews((prev) => ({
+        ...prev,
+        motherPhoto: file ? URL.createObjectURL(file) : null,
+      }));
+      
       if (errors.motherPhoto) {
         setErrors((prev) => {
           const newErrors = { ...prev };
@@ -251,6 +291,38 @@ export default function AdmissionsPage() {
       }
     }
   };
+
+  const handleDiscardPhoto = (fieldName: "studentPhoto" | "fatherPhoto" | "motherPhoto") => {
+    // Clean up preview URL
+    if (photoPreviews[fieldName]) {
+      URL.revokeObjectURL(photoPreviews[fieldName]);
+    }
+    
+    // Clear the file and preview
+    setFormData((prev) => ({ ...prev, [fieldName]: null }));
+    setPhotoPreviews((prev) => ({ ...prev, [fieldName]: null }));
+    
+    // Clear the file input
+    const fileInput = document.querySelector('input[name="' + fieldName + '"]') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  };
+
+  // Cleanup preview URLs on component unmount
+  useEffect(() => {
+    return () => {
+      if (photoPreviews.studentPhoto) {
+        URL.revokeObjectURL(photoPreviews.studentPhoto);
+      }
+      if (photoPreviews.fatherPhoto) {
+        URL.revokeObjectURL(photoPreviews.fatherPhoto);
+      }
+      if (photoPreviews.motherPhoto) {
+        URL.revokeObjectURL(photoPreviews.motherPhoto);
+      }
+    };
+  }, [photoPreviews.studentPhoto, photoPreviews.fatherPhoto, photoPreviews.motherPhoto]);
 
   const validateStudentDetails = (): { isValid: boolean; errors: FormErrors } => {
     const newErrors: FormErrors = {};
@@ -782,21 +854,13 @@ export default function AdmissionsPage() {
             <div className="form-grid">
               <label>
                 <span>Nationality</span>
-                <select
+                <input
                   name="nationality"
                   value={formData.nationality}
                   onChange={handleInputChange}
-                  className={errors.nationality ? "error" : ""}
+placeholder="Enter Nationality"
                 >
-                  <option value="" disabled>
-                    Select Nationality
-                  </option>
-                  {nationalityOptions.map((nation) => (
-                    <option key={nation} value={nation}>
-                      {nation}
-                    </option>
-                  ))}
-                </select>
+                </input>
                 {errors.nationality && <span className="error-message">{errors.nationality}</span>}
               </label>
               <label>
@@ -1225,10 +1289,36 @@ export default function AdmissionsPage() {
                   onChange={handleFileChange}
                   className="photo-input"
                 />
-                <div className={`photo-upload-box ${errors.studentPhoto ? "error" : ""}`}>
-                  <div className="photo-icon"></div>
-                  <div className="photo-text">Click to upload</div>
-                  <div className="photo-hint">JPEG, PNG, JPG Max size: 10MB</div>
+                <div className={`photo-upload-box ${errors.studentPhoto ? "error" : ""} ${photoPreviews.studentPhoto ? "has-preview" : ""}`}>
+                  {photoPreviews.studentPhoto ? (
+                    <>
+                      <div className="photo-preview-wrapper">
+                        <img src={photoPreviews.studentPhoto} alt="Student photo preview" className="photo-preview" />
+                        <button
+                          type="button"
+                          className="photo-discard-btn"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleDiscardPhoto("studentPhoto");
+                          }}
+                          title="Discard image"
+                        >
+                          ×
+                        </button>
+                      </div>
+                      <div className="photo-upload-indicator">
+                        <span className="photo-checkmark">✓</span>
+                        <span className="photo-upload-text">Image uploaded</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="photo-icon"></div>
+                      <div className="photo-text">Click to upload</div>
+                      <div className="photo-hint">JPEG, PNG, JPG Max size: 10MB</div>
+                    </>
+                  )}
                 </div>
               </label>
               {errors.studentPhoto ? (
@@ -1366,10 +1456,36 @@ export default function AdmissionsPage() {
                           onChange={handleFileChange}
                           className="photo-input"
                         />
-                        <div className={`photo-upload-box ${errors.fatherPhoto ? "error" : ""}`}>
-                          <div className="photo-icon"></div>
-                          <div className="photo-text">Click to upload</div>
-                          <div className="photo-hint">JPEG, PNG, JPG Max size: 10MB</div>
+                        <div className={`photo-upload-box ${errors.fatherPhoto ? "error" : ""} ${photoPreviews.fatherPhoto ? "has-preview" : ""}`}>
+                          {photoPreviews.fatherPhoto ? (
+                            <>
+                              <div className="photo-preview-wrapper">
+                                <img src={photoPreviews.fatherPhoto} alt="Father photo preview" className="photo-preview" />
+                                <button
+                                  type="button"
+                                  className="photo-discard-btn"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    handleDiscardPhoto("fatherPhoto");
+                                  }}
+                                  title="Discard image"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                              <div className="photo-upload-indicator">
+                                <span className="photo-checkmark">✓</span>
+                                <span className="photo-upload-text">Image uploaded</span>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="photo-icon"></div>
+                              <div className="photo-text">Click to upload</div>
+                              <div className="photo-hint">JPEG, PNG, JPG Max size: 10MB</div>
+                            </>
+                          )}
                         </div>
                       </label>
                       {errors.fatherPhoto ? (
@@ -1487,10 +1603,36 @@ export default function AdmissionsPage() {
                           onChange={handleFileChange}
                           className="photo-input"
                         />
-                        <div className={`photo-upload-box ${errors.motherPhoto ? "error" : ""}`}>
-                          <div className="photo-icon"></div>
-                          <div className="photo-text">Click to upload</div>
-                          <div className="photo-hint">JPEG, PNG, JPG Max size: 10MB</div>
+                        <div className={`photo-upload-box ${errors.motherPhoto ? "error" : ""} ${photoPreviews.motherPhoto ? "has-preview" : ""}`}>
+                          {photoPreviews.motherPhoto ? (
+                            <>
+                              <div className="photo-preview-wrapper">
+                                <img src={photoPreviews.motherPhoto} alt="Mother photo preview" className="photo-preview" />
+                                <button
+                                  type="button"
+                                  className="photo-discard-btn"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    handleDiscardPhoto("motherPhoto");
+                                  }}
+                                  title="Discard image"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                              <div className="photo-upload-indicator">
+                                <span className="photo-checkmark">✓</span>
+                                <span className="photo-upload-text">Image uploaded</span>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="photo-icon"></div>
+                              <div className="photo-text">Click to upload</div>
+                              <div className="photo-hint">JPEG, PNG, JPG Max size: 10MB</div>
+                            </>
+                          )}
                         </div>
                       </label>
                       {errors.motherPhoto ? (

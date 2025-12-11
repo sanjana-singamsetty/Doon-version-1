@@ -14,7 +14,9 @@ fi
 # Create .env.local with MongoDB credentials
 cat > .env.local << 'EOF'
 # MongoDB Connection
-MONGODB_URI=mongodb+srv://dev_db_user:DOON_in@doon-in-school.hpgy6y4.mongodb.net/doon-school?retryWrites=true&w=majority
+# IMPORTANT: Replace the placeholder below with your actual MongoDB connection string
+# Get it from MongoDB Atlas > Connect > Connect your application
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database-name?retryWrites=true&w=majority
 
 # JWT Secret (generate a random string, min 32 characters)
 # IMPORTANT: Change this to a secure random string in production!

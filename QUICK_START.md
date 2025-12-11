@@ -2,11 +2,13 @@
 
 ## ✅ Setup Complete!
 
-Your MongoDB connection has been verified and configured:
-- **Username**: `dev_db_user`
-- **Password**: `DOON_in` (configured)
-- **Database**: `doon-school`
-- **Cluster**: `doon-in-school.hpgy6y4.mongodb.net`
+Your MongoDB connection should be configured in `.env.local`:
+- **Username**: Your MongoDB Atlas username
+- **Password**: Your MongoDB Atlas password
+- **Database**: Your database name
+- **Cluster**: Your MongoDB Atlas cluster URL
+
+**See `.env.example` for the template configuration.**
 
 ## 🚀 Next Steps
 

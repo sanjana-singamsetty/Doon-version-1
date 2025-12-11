@@ -14,7 +14,9 @@ Create a `.env.local` file in the root directory with the following variables:
 
 ```env
 # MongoDB Connection
-MONGODB_URI=mongodb+srv://dev_db_user:DOON_in@doon-in-school.hpgy6y4.mongodb.net/doon-school?retryWrites=true&w=majority
+# IMPORTANT: Replace with your actual MongoDB Atlas connection string
+# Get it from: MongoDB Atlas > Connect > Connect your application
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database-name?retryWrites=true&w=majority
 
 # JWT Secret (generate a random string, min 32 characters)
 JWT_SECRET=your-super-secret-jwt-key-change-this-in-production-min-32-characters

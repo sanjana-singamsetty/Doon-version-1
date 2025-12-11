@@ -49,7 +49,8 @@
 You need to create a `.env.local` file with your MongoDB credentials:
 
 ```env
-MONGODB_URI=mongodb+srv://dev_db_user:DOON_in@doon-in-school.hpgy6y4.mongodb.net/doon-school?retryWrites=true&w=majority
+# IMPORTANT: Replace with your actual MongoDB Atlas connection string
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database-name?retryWrites=true&w=majority
 JWT_SECRET=your-super-secret-jwt-key-change-this-min-32-characters
 ADMIN_EMAIL=admin@dooninternational.com
 ADMIN_PASSWORD=ChangeThisSecurePassword123!

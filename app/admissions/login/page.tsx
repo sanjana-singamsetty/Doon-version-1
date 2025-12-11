@@ -233,7 +233,7 @@ export default function AdmissionsLoginPage() {
                   aria-invalid={input.length > 0 && (detectInputType(input) === "mobile" ? input.replace(/\D/g, "").length !== 10 : !input.includes("@"))}
                 />
                 <span id="contact-hint" className="input-hint">
-                  We'll send you a verification code
+                  We&apos;ll send you a verification code
                 </span>
               </div>
 
@@ -259,7 +259,7 @@ export default function AdmissionsLoginPage() {
               <div className="otp-section">
                 <div className="otp-header">
                   <p className="otp-info">
-                    We've sent a 6-digit code to {detectInputType(input) === "email" ? input.toLowerCase().trim() : `+91 ${input.replace(/\D/g, "")}`}
+                    We&apos;ve sent a 6-digit code to {detectInputType(input) === "email" ? input.toLowerCase().trim() : `+91 ${input.replace(/\D/g, "")}`}
                   </p>
                 </div>
 

@@ -28,6 +28,9 @@ async function testConnection() {
     
     // Test database operations
     const db = mongoose.connection.db;
+    if (!db) {
+      throw new Error('Database connection not available');
+    }
     const collections = await db.listCollections().toArray();
     console.log(`\n📊 Found ${collections.length} collection(s):`);
     collections.forEach(col => {

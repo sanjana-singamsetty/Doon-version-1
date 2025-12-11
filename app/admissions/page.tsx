@@ -284,6 +284,7 @@
 "use client";
 
 import * as React from "react";
+import { useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -453,7 +454,334 @@ export default function AdmissionsPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* Admissions Process Section */}
+      <section className="admissions-process-section">
+        <div className="container">
+          <div className="admissions-process-grid">
+            {/* Left Side - Building Image with Yellow Border */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="building-image-wrapper"
+            >
+              <div className="building-image-container">
+                <Image
+                  src="/images/image.png"
+                  alt="School Building"
+                  fill
+                  className="building-image"
+                />
+              </div>
+            </motion.div>
+
+            {/* Right Side - Admissions Process and Documents */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="admissions-process-content"
+            >
+              {/* Admissions Process */}
+              <div className="process-section">
+                <h2 className="process-title">Admissions Process</h2>
+                <p className="process-subtitle">Simple, Transparent, and Personalized.</p>
+                
+                <div className="process-steps">
+                  {[
+                    {
+                      step: "Step 1",
+                      title: "Enquiry",
+                      description: "Submit the enquiry form online or contact the admissions office."
+                    },
+                    {
+                      step: "Step 2",
+                      title: "Campus Visit",
+                      description: "Schedule a guided tour to experience the facilities."
+                    },
+                    {
+                      step: "Step 3",
+                      title: "Interaction & Assessment",
+                      description: "Student and parent interaction with the academic team."
+                    },
+                    {
+                      step: "Step 4",
+                      title: "Offer & Confirmation",
+                      description: "Receive offer letter via email."
+                    },
+                    {
+                      step: "Step 5",
+                      title: "Fee Payment & Enrolment",
+                      description: "Complete fee formalities to confirm admission."
+                    }
+                  ].map((item, index) => (
+                    <div key={index} className="process-step-item">
+                      <div className="step-icon-wrapper">
+                        <div className="step-icon">
+                          <svg width="16" height="12" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 6L5 10L15 2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                        </div>
+                        {index < 4 && <div className="step-connector"></div>}
+                      </div>
+                      <div className="step-content">
+                        <div className="step-header">
+                          <span className="step-number">{item.step}</span>
+                          <span className="step-title">{item.title}</span>
+                        </div>
+                        <p className="step-description">{item.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Required Documents */}
+              <div className="documents-section">
+                <h3 className="documents-title">Required documents</h3>
+                <ul className="documents-list">
+                  <li>Birth Certificate</li>
+                  <li>Recent Passport-size Photographs (Student & Parents)</li>
+                  <li>Aadhaar Card / ID Proof</li>
+                  <li>Previous School Report Cards (if applicable)</li>
+                  <li>Transfer Certificate (Grades 2-10)</li>
+                  <li>Medical Record / Immunization Details</li>
+                </ul>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Founding Batch Scholarships Section */}
+      <section className="scholarships-section">
+        <div className="container">
+          <div className="scholarships-grid">
+            {/* Left Content */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="scholarships-content"
+            >
+              <h2 className="scholarships-title">Founding Batch Scholarships</h2>
+              <p className="scholarships-description">
+                As part of the founding year, DIS Hyderabad offers merit-based scholarships and special fee benefits to outstanding students.
+              </p>
+              <ul className="scholarships-list">
+                <li>Academic Excellence</li>
+                <li>Sports & Arts Achievement</li>
+                <li>Leadership & Community Service</li>
+              </ul>
+            </motion.div>
+
+            {/* Right Icon */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="scholarships-icon"
+            >
+              <div className="graduation-icon-wrapper">
+                <Image
+                  src="/images/cap.png"
+                  alt="Graduation cap with rupee symbol"
+                  width={200}
+                  height={200}
+                  className="graduation-icon-image"
+                />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* For International Students Section */}
+      <section className="international-section">
+        <div className="international-bg">
+          <div className="container">
+            <div className="international-grid">
+              {/* Left Content */}
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="international-content"
+              >
+                <h2 className="international-title">For International Students</h2>
+                <p className="international-description">
+                  We welcome students from around the world. International applicants can complete the same application process online. Our admissions team assists with visa and transfer formalities.
+                </p>
+                <div className="international-cta">
+                  <Button className="international-button">Begin Application</Button>
+                </div>
+              </motion.div>
+
+              {/* Right Images */}
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="international-images"
+              >
+                <div className="international-image-wrapper">
+                  <Image
+                    src="/images/kid2.png"
+                    alt="Student girl with books"
+                    fill
+                    className="international-image"
+                  />
+                </div>
+                <div className="international-image-wrapper">
+                  <Image
+                    src="/images/kid3.png"
+                    alt="Student boy with toy"
+                    fill
+                    className="international-image"
+                  />
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="faq-section">
+        <div className="container">
+          <div className="faq-grid">
+            {/* Left Title */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="faq-title">Frequently Asked Admissions Questions</h2>
+            </motion.div>
+
+            {/* Right FAQ Items */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="faq-items"
+            >
+              <FAQAccordion />
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Admissions Open Section */}
+      <section className="admissions-open-section">
+        <div className="admissions-open-container">
+          <div className="container">
+            <div className="admissions-open-grid">
+              {/* Left Content */}
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="admissions-open-content"
+              >
+                <h2 className="admissions-open-title">
+                  Admissions Open for 2026-27. Limited Seats Available for Founding Batch
+                </h2>
+                <p className="admissions-open-description">
+                  Apply now to be part of a global learning community that inspires excellence.
+                </p>
+                <Button className="admissions-open-button">Apply Now</Button>
+              </motion.div>
+
+              {/* Right Building Image */}
+              <motion.div
+                initial={{ opacity: 0, x: 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="admissions-open-image"
+              >
+                <Image
+                  src="/images/admissioncampus.png"
+                  alt="School building"
+                  fill
+                  className="admissions-open-building"
+                />
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
+  );
+}
+
+// FAQ Accordion Component
+function FAQAccordion() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  const faqItems = [
+    {
+      question: "When does the academic year begin?",
+      answer: "Lorem ipsum dolor sit amet consectetur adipiscing elit Ut et massa mi. Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla, mattis ligula consectetur, ultrices mauris.",
+      note: "(April 2026)"
+    },
+    {
+      question: "Is there an entrance test?",
+      answer: "",
+      note: "(Interaction-based evaluation only.)"
+    },
+    {
+      question: "Do you offer transport and lunch facilities?",
+      answer: "",
+      note: "(Yes, both.)"
+    },
+    {
+      question: "What curriculum options are available?",
+      answer: "",
+      note: "(CBSE and IB)"
+    }
+  ];
+
+  const toggleItem = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  return (
+    <div className="faq-accordion">
+      {faqItems.map((item, index) => (
+        <div key={index} className="faq-item">
+          <button
+            className="faq-question"
+            onClick={() => toggleItem(index)}
+            aria-expanded={openIndex === index}
+          >
+            <span className="faq-question-text">
+              {item.question} <span className="faq-note">{item.note}</span>
+            </span>
+            <span className="faq-icon">
+              {openIndex === index ? "×" : "+"}
+            </span>
+          </button>
+          {openIndex === index && item.answer && (
+            <div className="faq-answer">
+              <p>{item.answer}</p>
+            </div>
+          )}
+          <div className="faq-divider"></div>
+        </div>
+      ))}
+    </div>
   );
 }
 

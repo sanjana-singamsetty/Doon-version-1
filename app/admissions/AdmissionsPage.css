@@ -170,8 +170,6 @@
     object-fit: contain;
   }
   
-  .begin-button-wrapper {}
-  
   .begin-button {
     background-color: #E5B93C;
     color: #1C2C5B;
@@ -237,5 +235,629 @@
   
   .eligibility-row:hover {
     background-color: #D8F0F3;
+  }
+
+  /* Admissions Process Section */
+  .admissions-process-section {
+    background-color: #E8F0F5;
+    padding-top: 4rem;
+    padding-bottom: 6rem;
+  }
+
+  .admissions-process-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  /* Building Image with Yellow Border */
+  .building-image-wrapper {
+    position: relative;
+  }
+
+  .building-image-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3/4;
+    border-left: 8px solid #E5B93C;
+    border-bottom: 8px solid #E5B93C;
+    overflow: hidden;
+  }
+
+  .building-image {
+    object-fit: cover;
+  }
+
+  /* Admissions Process Content */
+  .admissions-process-content {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  /* Process Section */
+  .process-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .process-title {
+    font-family: var(--font-crimson-pro), serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1C2C5B;
+    text-align: center;
+    margin: 0;
+  }
+
+  .process-subtitle {
+    font-family: var(--font-poppins), sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #1C2C5B;
+    text-align: center;
+    margin: 0;
+  }
+
+  .process-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+    margin-top: 1rem;
+  }
+
+  .process-step-item {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .step-icon-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .step-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #1C2C5B;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    z-index: 2;
+    position: relative;
+  }
+
+  .step-connector {
+    width: 2px;
+    height: 100px;
+    background: repeating-linear-gradient(
+      to bottom,
+      #1C2C5B 0px,
+      #1C2C5B 4px,
+      transparent 4px,
+      transparent 8px
+    );
+    margin-top: 8px;
+    margin-bottom: -8px;
+  }
+
+  .step-content {
+    flex: 1;
+    padding-top: 4px;
+  }
+
+  .step-header {
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    margin-bottom: 0.5rem;
+  }
+
+  .step-number {
+    font-family: var(--font-poppins), sans-serif;
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #6B7280;
+  }
+
+  .step-title {
+    font-family: var(--font-poppins), sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1C2C5B;
+  }
+
+  .step-description {
+    font-family: var(--font-poppins), sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    color: #1C2C5B;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Documents Section */
+  .documents-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .documents-title {
+    font-family: var(--font-crimson-pro), serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1C2C5B;
+    margin: 0;
+  }
+
+  .documents-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .documents-list li {
+    font-family: var(--font-poppins), sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    color: #1C2C5B;
+    line-height: 1.5;
+    padding-left: 1.5rem;
+    position: relative;
+  }
+
+  .documents-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.5rem;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: #1C2C5B;
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .admissions-process-grid {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .building-image-container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .process-title {
+      font-size: 2rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .admissions-process-section {
+      padding-top: 3rem;
+      padding-bottom: 4rem;
+    }
+
+    .process-title {
+      font-size: 1.75rem;
+    }
+
+    .step-icon {
+      width: 28px;
+      height: 28px;
+    }
+
+    .step-connector {
+      height: 80px;
+    }
+  }
+
+  /* Scholarships Section */
+  .scholarships-section {
+    background-color: #FBF9E3;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  .scholarships-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .scholarships-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .scholarships-title {
+    font-family: var(--font-crimson-pro), serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1C2C5B;
+    margin: 0;
+  }
+
+  .scholarships-description {
+    font-family: var(--font-poppins), sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #4B5563;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .scholarships-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .scholarships-list li {
+    font-family: var(--font-poppins), sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #4B5563;
+    padding-left: 1.5rem;
+    position: relative;
+  }
+
+  .scholarships-list li::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #1C2C5B;
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+
+  .scholarships-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .graduation-icon-wrapper {
+    width: 200px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .graduation-icon-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* International Students Section */
+  .international-section {
+    position: relative;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .international-bg {
+    background-color: #1C2C5B;
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231F3A6B' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    width: 100%;
+  }
+
+  .international-bg .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .international-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    padding: 4rem 0;
+    min-height: 500px;
+  }
+
+  .international-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding-right: 1rem;
+  }
+
+  .international-title {
+    font-family: var(--font-crimson-pro), serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #E5B93C;
+    margin: 0;
+  }
+
+  .international-description {
+    font-family: var(--font-poppins), sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #FFFFFF;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .international-cta {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+  }
+
+  .international-button {
+    background-color: #E5B93C;
+    color: #1C2C5B;
+    font-weight: 600;
+    padding: 0.875rem 2.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .international-button:hover {
+    background-color: #F4C23F;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .international-images {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .international-image-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3/4;
+    border-radius: 1rem;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .international-image-wrapper:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .international-image {
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.3s ease;
+  }
+
+  .international-image-wrapper:hover .international-image {
+    transform: scale(1.05);
+  }
+
+  /* FAQ Section */
+  .faq-section {
+    background-color: #FBF9E3;
+    padding-top: 4rem;
+    padding-bottom: 6rem;
+  }
+
+  .faq-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .faq-title {
+    font-family: var(--font-crimson-pro), serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1C2C5B;
+    margin: 0;
+  }
+
+  .faq-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .faq-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-family: var(--font-poppins), sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #4B5563;
+  }
+
+  .faq-question-text {
+    flex: 1;
+  }
+
+  .faq-note {
+    color: #6B7280;
+  }
+
+  .faq-icon {
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: #1C2C5B;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .faq-answer {
+    padding-bottom: 1rem;
+    font-family: var(--font-poppins), sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 400;
+    color: #4B5563;
+    line-height: 1.6;
+  }
+
+  .faq-divider {
+    height: 1px;
+    background-color: #E5E7EB;
+    width: 100%;
+  }
+
+  /* Admissions Open Section */
+  .admissions-open-section {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+    background-color: #E8F0F5;
+  }
+
+  .admissions-open-container {
+    background-color: #1C2C5B;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  .admissions-open-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    padding: 3rem 2rem;
+    min-height: 350px;
+  }
+
+  .admissions-open-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .admissions-open-title {
+    font-family: var(--font-crimson-pro), serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .admissions-open-description {
+    font-family: var(--font-poppins), sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    color: #FFFFFF;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .admissions-open-button {
+    background-color: #E5B93C;
+    color: #1C2C5B;
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 0.375rem;
+    border: none;
+    align-self: flex-start;
+  }
+
+  .admissions-open-image {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .admissions-open-building {
+    object-fit: cover;
+  }
+
+  /* Responsive Styles */
+  @media (max-width: 1024px) {
+    .scholarships-grid,
+    .international-grid,
+    .faq-grid,
+    .admissions-open-grid {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .international-images {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .admissions-open-image {
+      height: 300px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .scholarships-section {
+      padding-top: 3rem;
+    }
+
+    .international-section {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .international-grid {
+      padding: 3rem 0;
+    }
+
+    .faq-section {
+      padding-top: 0;
+      padding-bottom: 4rem;
+    }
+
+    .scholarships-title,
+    .international-title,
+    .faq-title {
+      font-size: 2rem;
+    }
+
+    .admissions-open-grid {
+      padding: 3rem 1.5rem;
+    }
+
+    .admissions-open-title {
+      font-size: 1.75rem;
+    }
   }
   

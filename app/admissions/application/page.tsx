@@ -245,14 +245,14 @@ export default function AdmissionsPage() {
     
     if (fieldName === "studentPhoto") {
       // Clean up previous preview URL
-      if (photoPreviews.studentPhoto) {
+      if (typeof window !== 'undefined' && photoPreviews.studentPhoto) {
         URL.revokeObjectURL(photoPreviews.studentPhoto);
       }
       
       setFormData((prev) => ({ ...prev, studentPhoto: file }));
       setPhotoPreviews((prev) => ({
         ...prev,
-        studentPhoto: file ? URL.createObjectURL(file) : null,
+        studentPhoto: file && typeof window !== 'undefined' ? URL.createObjectURL(file) : null,
       }));
       
       if (errors.studentPhoto) {
@@ -264,14 +264,14 @@ export default function AdmissionsPage() {
       }
     } else if (fieldName === "fatherPhoto") {
       // Clean up previous preview URL
-      if (photoPreviews.fatherPhoto) {
+      if (typeof window !== 'undefined' && photoPreviews.fatherPhoto) {
         URL.revokeObjectURL(photoPreviews.fatherPhoto);
       }
       
       setFormData((prev) => ({ ...prev, fatherPhoto: file }));
       setPhotoPreviews((prev) => ({
         ...prev,
-        fatherPhoto: file ? URL.createObjectURL(file) : null,
+        fatherPhoto: file && typeof window !== 'undefined' ? URL.createObjectURL(file) : null,
       }));
       
       if (errors.fatherPhoto) {
@@ -283,14 +283,14 @@ export default function AdmissionsPage() {
       }
     } else if (fieldName === "motherPhoto") {
       // Clean up previous preview URL
-      if (photoPreviews.motherPhoto) {
+      if (typeof window !== 'undefined' && photoPreviews.motherPhoto) {
         URL.revokeObjectURL(photoPreviews.motherPhoto);
       }
       
       setFormData((prev) => ({ ...prev, motherPhoto: file }));
       setPhotoPreviews((prev) => ({
         ...prev,
-        motherPhoto: file ? URL.createObjectURL(file) : null,
+        motherPhoto: file && typeof window !== 'undefined' ? URL.createObjectURL(file) : null,
       }));
       
       if (errors.motherPhoto) {
@@ -305,7 +305,7 @@ export default function AdmissionsPage() {
 
   const handleDiscardPhoto = (fieldName: "studentPhoto" | "fatherPhoto" | "motherPhoto") => {
     // Clean up preview URL
-    if (photoPreviews[fieldName]) {
+    if (typeof window !== 'undefined' && photoPreviews[fieldName]) {
       URL.revokeObjectURL(photoPreviews[fieldName]);
     }
     
@@ -314,23 +314,27 @@ export default function AdmissionsPage() {
     setPhotoPreviews((prev) => ({ ...prev, [fieldName]: null }));
     
     // Clear the file input
-    const fileInput = document.querySelector('input[name="' + fieldName + '"]') as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = '';
+    if (typeof window !== 'undefined') {
+      const fileInput = document.querySelector('input[name="' + fieldName + '"]') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
     }
   };
 
   // Cleanup preview URLs on component unmount
   useEffect(() => {
     return () => {
-      if (photoPreviews.studentPhoto) {
-        URL.revokeObjectURL(photoPreviews.studentPhoto);
-      }
-      if (photoPreviews.fatherPhoto) {
-        URL.revokeObjectURL(photoPreviews.fatherPhoto);
-      }
-      if (photoPreviews.motherPhoto) {
-        URL.revokeObjectURL(photoPreviews.motherPhoto);
+      if (typeof window !== 'undefined') {
+        if (photoPreviews.studentPhoto) {
+          URL.revokeObjectURL(photoPreviews.studentPhoto);
+        }
+        if (photoPreviews.fatherPhoto) {
+          URL.revokeObjectURL(photoPreviews.fatherPhoto);
+        }
+        if (photoPreviews.motherPhoto) {
+          URL.revokeObjectURL(photoPreviews.motherPhoto);
+        }
       }
     };
   }, [photoPreviews.studentPhoto, photoPreviews.fatherPhoto, photoPreviews.motherPhoto]);
@@ -517,7 +521,7 @@ export default function AdmissionsPage() {
       } else {
         // Scroll to first error
         const firstErrorField = Object.keys(validation.errors)[0];
-        if (firstErrorField) {
+        if (firstErrorField && typeof window !== 'undefined') {
           const element = document.querySelector(`[name="${firstErrorField}"]`);
           element?.scrollIntoView({ behavior: "smooth", block: "center" });
         }
@@ -529,7 +533,7 @@ export default function AdmissionsPage() {
       } else {
         // Scroll to first error
         const firstErrorField = Object.keys(validation.errors)[0];
-        if (firstErrorField) {
+        if (firstErrorField && typeof window !== 'undefined') {
           const element = document.querySelector(`[name="${firstErrorField}"]`);
           element?.scrollIntoView({ behavior: "smooth", block: "center" });
         }
@@ -557,13 +561,15 @@ export default function AdmissionsPage() {
 
         if (response.ok) {
           // Save submitted application data to localStorage for preview
-          const dataToStore = {
-            ...formData,
-            studentPhoto: formData.studentPhoto ? "Uploaded" : null,
-            fatherPhoto: formData.fatherPhoto ? "Uploaded" : null,
-            motherPhoto: formData.motherPhoto ? "Uploaded" : null,
-          };
-          localStorage.setItem("lastSubmittedApplication", JSON.stringify(dataToStore));
+          if (typeof window !== 'undefined') {
+            const dataToStore = {
+              ...formData,
+              studentPhoto: formData.studentPhoto ? "Uploaded" : null,
+              fatherPhoto: formData.fatherPhoto ? "Uploaded" : null,
+              motherPhoto: formData.motherPhoto ? "Uploaded" : null,
+            };
+            localStorage.setItem("lastSubmittedApplication", JSON.stringify(dataToStore));
+          }
           
           // Redirect to dashboard page
           router.push("/admissions/dashboard");
@@ -1759,10 +1765,10 @@ placeholder="Enter Nationality"
                 </div>
 
                 <div className="preview-student-card">
-                  {formData.studentPhoto && (
+                  {photoPreviews.studentPhoto && (
                     <div className="preview-photo">
                       <img
-                        src={URL.createObjectURL(formData.studentPhoto)}
+                        src={photoPreviews.studentPhoto}
                         alt="Student"
                         className="preview-photo-img"
                       />
@@ -1918,10 +1924,10 @@ placeholder="Enter Nationality"
                 <div className="preview-parents-grid">
                   {/* Father&apos;s Details */}
                   <div className="preview-parent-card">
-                    {formData.fatherPhoto && (
+                    {photoPreviews.fatherPhoto && (
                       <div className="preview-photo">
                         <img
-                          src={URL.createObjectURL(formData.fatherPhoto)}
+                          src={photoPreviews.fatherPhoto}
                           alt="Father"
                           className="preview-photo-img"
                         />
@@ -1975,10 +1981,10 @@ placeholder="Enter Nationality"
 
                   {/* Mother&apos;s Details */}
                   <div className="preview-parent-card">
-                    {formData.motherPhoto && (
+                    {photoPreviews.motherPhoto && (
                       <div className="preview-photo">
                         <img
-                          src={URL.createObjectURL(formData.motherPhoto)}
+                          src={photoPreviews.motherPhoto}
                           alt="Mother"
                           className="preview-photo-img"
                         />

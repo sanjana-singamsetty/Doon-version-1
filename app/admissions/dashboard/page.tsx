@@ -140,74 +140,72 @@ export default function AdmissionsDashboardPage() {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            {/* In-Complete Application Section - Left Column */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="lg:col-span-1"
-            >
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                {/* Orange Header */}
-                <div className="bg-[#FF7A00] px-6 py-4">
-                  <h2 className="text-xl sm:text-2xl font-display font-bold text-[#1C2C5B]">
-                    In-Complete Application
-                  </h2>
-                </div>
-
-                {/* Dark Blue Body */}
-                <div className="bg-[#1C2C5B] p-6">
-                  <p className="text-white text-base mb-6">Application Number Not Generated</p>
-                  
-                  {/* Student Image */}
-                  <div className="flex justify-center mb-6">
-                    <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-lg overflow-hidden bg-white/10">
-                      <Image
-                        src="/images/student-boy.jpg"
-                        alt="Student"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Student Info */}
-                  <div className="text-center mb-6">
-                    <p className="text-white text-xl font-semibold mb-2">
-                      {applicationData 
-                        ? [applicationData.firstName, applicationData.middleName, applicationData.lastName].filter(Boolean).join(' ') || 'Student Name'
-                        : 'Yashwanth Kalluri'
-                      }
-                    </p>
-                    <p className="text-white text-base">
-                      Application for: {applicationData 
-                        ? `${applicationData.grade || 'Grade-4'} ${applicationData.board || 'CBSE'}`.trim()
-                        : 'Grade-4 CBSE'
-                      }
-                    </p>
-                  </div>
-
-                  {/* Continue Button */}
-                  <button
-                    onClick={handleContinue}
-                    className="w-full bg-[#E5B93C] text-[#1C2C5B] font-semibold py-3 px-6 rounded-md hover:bg-[#F4C23F] transition-all duration-200 text-base flex items-center justify-center gap-2"
-                  >
-                    Continue →
-                  </button>
-                </div>
+        <div className="max-w-7xl mx-auto space-y-8">
+          
+          {/* In-Complete Application Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-md"
+          >
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+              {/* Orange Header */}
+              <div className="bg-[#FF7A00] px-6 py-4">
+                <h2 className="text-xl sm:text-2xl font-display font-bold text-[#1C2C5B]">
+                  In-Complete Application
+                </h2>
               </div>
-            </motion.div>
 
-            {/* Create New Application Section - Right Column */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="lg:col-span-2"
-            >
+              {/* Dark Blue Body */}
+              <div className="bg-[#1C2C5B] p-6">
+                <p className="text-white text-base mb-6">Application Number Not Generated</p>
+                
+                {/* Student Image */}
+                <div className="flex justify-center mb-6">
+                  <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-lg overflow-hidden bg-white/10">
+                    <Image
+                      src="/images/student-boy.jpg"
+                      alt="Student"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                </div>
+
+                {/* Student Info */}
+                <div className="text-center mb-6">
+                  <p className="text-white text-xl font-semibold mb-2">
+                    {applicationData 
+                      ? [applicationData.firstName, applicationData.middleName, applicationData.lastName].filter(Boolean).join(' ') || 'Student Name'
+                      : 'Yashwanth Kalluri'
+                    }
+                  </p>
+                  <p className="text-white text-base">
+                    Application for: {applicationData 
+                      ? `${applicationData.grade || 'Grade-4'} ${applicationData.board || 'CBSE'}`.trim()
+                      : 'Grade-4 CBSE'
+                    }
+                  </p>
+                </div>
+
+                {/* Continue Button */}
+                <button
+                  onClick={handleContinue}
+                  className="w-full bg-[#E5B93C] text-[#1C2C5B] font-semibold py-3 px-6 rounded-md hover:bg-[#F4C23F] transition-all duration-200 text-base flex items-center justify-center gap-2"
+                >
+                  Continue →
+                </button>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Create New Application Section - Below */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
 
               <h2 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-[#1C2C5B] mb-6 sm:mb-8">
                 Create New Application
@@ -289,9 +287,8 @@ export default function AdmissionsDashboardPage() {
                 {/* Decorative Pattern */}
                 <div className="h-12 sm:h-16 bg-gradient-to-r from-[#1C2C5B] via-[#E5B93C] to-[#1C2C5B] opacity-20"></div>
               </motion.div>
-              </div>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         </div>
       </div>
 

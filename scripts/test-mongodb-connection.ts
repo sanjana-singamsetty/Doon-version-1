@@ -14,7 +14,8 @@ async function testConnection() {
     if (!MONGODB_URI) {
       console.error('❌ MONGODB_URI environment variable is not set');
       console.log('\nPlease create a .env.local file with:');
-      console.log('MONGODB_URI=mongodb+srv://dev_db_user:DOON_in@doon-in-school.hpgy6y4.mongodb.net/doon-school?retryWrites=true&w=majority');
+      console.log('MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/database-name?retryWrites=true&w=majority');
+      console.log('\nSee .env.example for template configuration.');
       process.exit(1);
     }
 

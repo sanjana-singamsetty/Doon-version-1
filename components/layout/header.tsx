@@ -13,15 +13,7 @@ type NavItem = {
 const navItems: NavItem[] = [
   { label: "About", href: "/about" },
   { label: "Academics", href: "/academics" },
-  { 
-    label: "Admissions", 
-    href: "/admissions",
-    dropdown: [
-      { label: "Admission Page", href: "/admissions" },
-      { label: "Admission Login", href: "/admissions/login" },
-      { label: "Admission Form", href: "/admissions/application" },
-    ]
-  },
+  { label: "Admissions", href: "/admissions" },
   { label: "Curriculum", href: "/curriculum" },
   // { label: "Contact", href: "/contact" },
 ]
@@ -90,8 +82,8 @@ export function Header() {
       className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 lg:px-8 pt-4"
     >
       <nav className="max-w-7xl mx-auto">
-      <div className="bg-white/90 backdrop-blur-md rounded-full px-8 py-4 shadow-lg border border-white/20">
-          <div className="flex justify-end items-center gap-10 sm:gap-12">
+      <div className="bg-white/90 backdrop-blur-sm rounded-full px-6 sm:px-8 lg:px-10 py-3 sm:py-3.5 shadow-sm">
+          <div className="flex justify-end items-center gap-8 sm:gap-10 lg:gap-12">
             {navItems.map((item, index) => (
               <motion.div
                 key={item.href}
@@ -114,7 +106,7 @@ export function Header() {
                         e.stopPropagation()
                         handleDropdownToggle(item.label)
                       }}
-                      className="text-gray-900 font-semibold text-base sm:text-lg hover:text-blue-700 transition-colors duration-200 relative group flex items-center gap-1"
+                      className="text-gray-700 font-medium text-base sm:text-lg hover:text-gray-900 hover:scale-105 transition-all duration-200 flex items-center gap-1"
                       type="button"
                       aria-expanded={openDropdown === item.label}
                       aria-haspopup="true"
@@ -135,7 +127,6 @@ export function Header() {
                           d="M19 9l-7 7-7-7"
                         />
                       </svg>
-                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-700 group-hover:w-full transition-all duration-300" />
                     </button>
                     {openDropdown === item.label && (
                       <motion.div
@@ -164,14 +155,40 @@ export function Header() {
                 ) : (
                   <Link
                     href={item.href}
-                    className="text-gray-900 font-semibold text-base sm:text-lg hover:text-blue-700 transition-colors duration-200 relative group"
+                    className="text-gray-700 font-medium text-base sm:text-lg hover:text-gray-900 hover:scale-105 transition-all duration-200"
                   >
                     {item.label}
-                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-blue-700 group-hover:w-full transition-all duration-300" />
                   </Link>
                 )}
               </motion.div>
             ))}
+            
+            {/* Apply Now Button - Right Side */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3, duration: 0.3 }}
+              className="ml-2 relative"
+            >
+              <Link
+                href="/admissions/login"
+                className="text-gray-900 font-extrabold text-base sm:text-lg hover:text-gray-700 hover:scale-110 transition-all duration-200 relative inline-block"
+              >
+                <motion.span
+                  animate={{
+                    opacity: [1, 0.3, 1],
+                  }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="inline-block"
+                >
+                  Apply Now
+                </motion.span>
+              </Link>
+            </motion.div>
           </div>
         </div>
       </nav>

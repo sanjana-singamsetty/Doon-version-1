@@ -1,253 +1,106 @@
 import { NextRequest, NextResponse } from "next/server";
-import { google } from "googleapis";
-
-// Column headers for the Google Sheet
-const COLUMN_HEADERS = [
-  "Timestamp",
-  "First Name",
-  "Middle Name",
-  "Last Name",
-  "Gender",
-  "Grade",
-  "Board/Curriculum",
-  "Date of Birth",
-  "Birth Region/District",
-  "Birth State",
-  "Nationality",
-  "Aadhar Card No",
-  "Blood Group",
-  "Identification Marks",
-  "Correspondence Address",
-  "Area",
-  "District",
-  "State",
-  "Country",
-  "Pincode",
-  "Same as Permanent Address",
-  "Permanent Address",
-  "Permanent Area",
-  "Permanent District",
-  "Permanent State",
-  "Permanent Country",
-  "Permanent Pincode",
-  "Mother Tongue",
-  "Religion",
-  "Category",
-  "Caste",
-  "Sub Caste",
-  "AAPAR ID",
-  "Family Structure",
-  "Siblings Details",
-  "Student Photo",
-  "Father's Full Name",
-  "Father's Mobile Number",
-  "Father's Email",
-  "Father's Aadhar Card",
-  "Father's Qualification",
-  "Father's Profession",
-  "Father's Photo",
-  "Mother's Full Name",
-  "Mother's Mobile Number",
-  "Mother's Email",
-  "Mother's Aadhar Card",
-  "Mother's Qualification",
-  "Mother's Profession",
-  "Mother's Photo",
-  "Gross Annual Income (INR)",
-];
-
-async function getSheetsClient() {
-  try {
-    // Get service account credentials from environment variable
-    const serviceAccountKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
-    
-    if (!serviceAccountKey) {
-      throw new Error("GOOGLE_SERVICE_ACCOUNT_KEY environment variable is not set");
-    }
-
-    // Parse the service account key JSON
-    let credentials;
-    try {
-      credentials = JSON.parse(serviceAccountKey);
-    } catch (parseError) {
-      console.error("Failed to parse GOOGLE_SERVICE_ACCOUNT_KEY JSON:", parseError);
-      throw new Error("Invalid JSON format in GOOGLE_SERVICE_ACCOUNT_KEY");
-    }
-    
-    // Fix private key: ensure newlines are properly formatted
-    // Handle both escaped newlines (\n) and actual newlines
-    let privateKey = credentials.private_key;
-    if (!privateKey) {
-      throw new Error("private_key not found in service account credentials");
-    }
-    
-    // Replace escaped newlines with actual newlines
-    // This handles the case where JSON.stringify or env var storage escaped them
-    privateKey = privateKey.replace(/\\n/g, '\n');
-    
-    // Additional check: if still no actual newlines, try another approach
-    if (!privateKey.includes('\n') && privateKey.includes('\\n')) {
-      // Double-escaped case
-      privateKey = privateKey.replace(/\\\\n/g, '\n');
-    }
-    
-    // Validate the key format
-    if (!privateKey.includes('BEGIN PRIVATE KEY') || !privateKey.includes('END PRIVATE KEY')) {
-      console.error("Private key format appears incorrect - missing BEGIN/END markers");
-      throw new Error("Invalid private key format");
-    }
-    
-    // Create JWT client for service account
-    const auth = new google.auth.JWT({
-      email: credentials.client_email,
-      key: privateKey,
-      scopes: ['https://www.googleapis.com/auth/spreadsheets']
-    });
-
-    // Create and return the Sheets API client
-    return google.sheets({ version: 'v4', auth });
-  } catch (error) {
-    console.error("Error creating Sheets client:", error);
-    throw error;
-  }
-}
-
-async function ensureHeadersExist(sheets: any, spreadsheetId: string, sheetName: string = 'admission-form') {
-  try {
-    // Check if sheet has data
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId,
-      range: `${sheetName}!A1:AZ1`,
-    });
-    
-    const existingValues = response.data.values;
-    
-    // If first row is empty or doesn't match headers, add headers
-    if (!existingValues || existingValues.length === 0 || 
-        JSON.stringify(existingValues[0]) !== JSON.stringify(COLUMN_HEADERS)) {
-      // Add headers
-      await sheets.spreadsheets.values.update({
-        spreadsheetId,
-        range: `${sheetName}!A1`,
-        valueInputOption: 'RAW',
-        requestBody: {
-          values: [COLUMN_HEADERS],
-        },
-      });
-    }
-  } catch (error) {
-    console.error("Error ensuring headers:", error);
-    // Continue anyway - headers might already exist
-  }
-}
+import dbConnect from "@/lib/mongoose";
+import Admission from "@/lib/models/Admission";
+import { requireAuth } from "@/lib/middleware/auth";
 
 export async function POST(request: NextRequest) {
   try {
+    // Authenticate user (optional - can link to user if authenticated)
+    const authResult = requireAuth(request, false);
+    const userId = authResult.user?.userId || undefined;
+
+    await dbConnect();
     const formData = await request.json();
 
-    // Get Google Sheet ID from environment variable
-    // Default to the same sheet used for enquiries if GOOGLE_SHEET_ID is not set
-    const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID || "12CgHpE9x8TsuoosG3KctIbrM941N1eOCKmgLwPRTPbs";
-    // Get sheet tab name (defaults to 'admission-form', but can be overridden via env var)
-    const SHEET_NAME = process.env.ADMISSION_SHEET_NAME || 'admission-form';
+    // Map form data to Admission model
+    // Handle image URLs - they should be uploaded separately via /api/upload/image
+    const admissionData = {
+      // Student Details
+      firstName: formData.firstName,
+      middleName: formData.middleName || '',
+      lastName: formData.lastName,
+      gender: formData.gender,
+      grade: formData.grade,
+      board: formData.board,
+      dob: new Date(formData.dob),
+      birthRegion: formData.birthRegion,
+      birthState: formData.birthState,
+      nationality: formData.nationality,
+      aadhar: formData.aadhar,
+      bloodGroup: formData.bloodGroup,
+      identificationMarks: formData.identificationMarks || ['', ''],
+      
+      // Address
+      correspondenceAddress: formData.correspondenceAddress,
+      area: formData.area,
+      district: formData.district,
+      state: formData.state,
+      country: formData.country,
+      pincode: formData.pincode,
+      samePermanentAddress: formData.samePermanentAddress || false,
+      permanentAddress: formData.permanentAddress || '',
+      permanentArea: formData.permanentArea || '',
+      permanentDistrict: formData.permanentDistrict || '',
+      permanentState: formData.permanentState || '',
+      permanentCountry: formData.permanentCountry || '',
+      permanentPincode: formData.permanentPincode || '',
+      
+      // Additional Details
+      motherTongue: formData.motherTongue,
+      religion: formData.religion,
+      category: formData.category,
+      caste: formData.caste,
+      subCaste: formData.subCaste || '',
+      apaarId: formData.apaarId || '',
+      familyStructure: formData.familyStructure,
+      siblings: formData.siblings || [],
+      
+      // Parent Details
+      fatherFullName: formData.fatherFullName,
+      fatherMobileCode: formData.fatherMobileCode || '+91',
+      fatherMobile: formData.fatherMobile,
+      fatherEmail: formData.fatherEmail?.toLowerCase(),
+      fatherAadhar: formData.fatherAadhar,
+      fatherQualification: formData.fatherQualification,
+      fatherProfession: formData.fatherProfession,
+      motherFullName: formData.motherFullName,
+      motherMobileCode: formData.motherMobileCode || '+91',
+      motherMobile: formData.motherMobile,
+      motherEmail: formData.motherEmail?.toLowerCase(),
+      motherAadhar: formData.motherAadhar,
+      motherQualification: formData.motherQualification,
+      motherProfession: formData.motherProfession,
+      grossAnnualIncome: formData.grossAnnualIncome,
+      
+      // Image URLs (from upload API)
+      studentPhotoUrl: formData.studentPhotoUrl || formData.studentPhoto || '',
+      fatherPhotoUrl: formData.fatherPhotoUrl || formData.fatherPhoto || '',
+      motherPhotoUrl: formData.motherPhotoUrl || formData.motherPhoto || '',
+      
+      // Status
+      status: 'submitted' as const,
+      submittedBy: userId,
+    };
 
-    if (!SPREADSHEET_ID) {
-      return NextResponse.json(
-        { 
-          error: "Google Sheets configuration missing. Please set GOOGLE_SHEET_ID in your .env.local file. See GOOGLE_SHEETS_SETUP.md for instructions." 
-        },
-        { status: 500 }
-      );
-    }
-
-    // Get Sheets API client
-    const sheets = await getSheetsClient();
-
-    // Ensure headers exist (only runs if sheet is empty)
-    await ensureHeadersExist(sheets, SPREADSHEET_ID, SHEET_NAME);
-
-    // Format the data for Google Sheets
-    // Prepare row data with all fields
-    const rowData = [
-      new Date().toISOString(), // Timestamp
-      formData.firstName || "",
-      formData.middleName || "",
-      formData.lastName || "",
-      formData.gender || "",
-      formData.grade || "",
-      formData.board || "",
-      formData.dob || "",
-      formData.birthRegion || "",
-      formData.birthState || "",
-      formData.nationality || "",
-      formData.aadhar || "",
-      formData.bloodGroup || "",
-      formData.identificationMarks?.join(", ") || "",
-      formData.correspondenceAddress || "",
-      formData.area || "",
-      formData.district || "",
-      formData.state || "",
-      formData.country || "",
-      formData.pincode || "",
-      formData.samePermanentAddress ? "Yes" : "No",
-      formData.permanentAddress || "",
-      formData.permanentArea || "",
-      formData.permanentDistrict || "",
-      formData.permanentState || "",
-      formData.permanentCountry || "",
-      formData.permanentPincode || "",
-      formData.motherTongue || "",
-      formData.religion || "",
-      formData.category || "",
-      formData.caste || "",
-      formData.subCaste || "",
-      formData.apaarId || "",
-      formData.familyStructure || "",
-      formData.siblings?.map((s: any) => `${s.name} (${s.age}, ${s.institution}, ${s.standard})`).join("; ") || "",
-      formData.studentPhoto ? "Uploaded" : "",
-      // Parent details
-      formData.fatherFullName || "",
-      `${formData.fatherMobileCode || ""} ${formData.fatherMobile || ""}`.trim(),
-      formData.fatherEmail || "",
-      formData.fatherAadhar || "",
-      formData.fatherQualification || "",
-      formData.fatherProfession || "",
-      formData.fatherPhoto ? "Uploaded" : "",
-      formData.motherFullName || "",
-      `${formData.motherMobileCode || ""} ${formData.motherMobile || ""}`.trim(),
-      formData.motherEmail || "",
-      formData.motherAadhar || "",
-      formData.motherQualification || "",
-      formData.motherProfession || "",
-      formData.motherPhoto ? "Uploaded" : "",
-      formData.grossAnnualIncome || "",
-    ];
-
-    // Prepare the request body for Google Sheets API
-    const values = [rowData];
-
-    // Use Google Sheets API v4 to append data
-    const result = await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${SHEET_NAME}!A:A`,
-      valueInputOption: 'RAW',
-      requestBody: {
-        values: values,
-      },
-    });
+    // Create admission in MongoDB
+    const admission = await Admission.create(admissionData);
 
     return NextResponse.json(
-      { 
-        success: true, 
-        message: "Form submitted successfully",
-        result: result.data 
+      {
+        success: true,
+        message: "Application submitted successfully",
+        id: admission._id,
+        applicationNumber: admission.applicationNumber,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error submitting form:", error);
+    console.error("Error submitting admission:", error);
     return NextResponse.json(
-      { error: "Internal server error", details: error instanceof Error ? error.message : "Unknown error" },
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 }
     );
   }

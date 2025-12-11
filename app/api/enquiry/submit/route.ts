@@ -1,162 +1,52 @@
 import { NextRequest, NextResponse } from "next/server";
-import { google } from "googleapis";
-
-// Column headers for the Enquiry Google Sheet
-const ENQUIRY_COLUMN_HEADERS = [
-  "Timestamp",
-  "Child's Name",
-  "Admission for Grade",
-  "Boarding Type",
-  "E-mail ID",
-  "Mobile Number",
-  "Message",
-];
-
-async function getSheetsClient() {
-  try {
-    // Get service account credentials from environment variable
-    const serviceAccountKey = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
-    
-    if (!serviceAccountKey) {
-      throw new Error("GOOGLE_SERVICE_ACCOUNT_KEY environment variable is not set");
-    }
-
-    // Parse the service account key JSON
-    let credentials;
-    try {
-      credentials = JSON.parse(serviceAccountKey);
-    } catch (parseError) {
-      console.error("Failed to parse GOOGLE_SERVICE_ACCOUNT_KEY JSON:", parseError);
-      throw new Error("Invalid JSON format in GOOGLE_SERVICE_ACCOUNT_KEY");
-    }
-    
-    // Fix private key: ensure newlines are properly formatted
-    let privateKey = credentials.private_key;
-    if (!privateKey) {
-      throw new Error("private_key not found in service account credentials");
-    }
-    
-    // Replace escaped newlines with actual newlines
-    privateKey = privateKey.replace(/\\n/g, '\n');
-    
-    // Additional check: if still no actual newlines, try another approach
-    if (!privateKey.includes('\n') && privateKey.includes('\\n')) {
-      privateKey = privateKey.replace(/\\\\n/g, '\n');
-    }
-    
-    // Validate the key format
-    if (!privateKey.includes('BEGIN PRIVATE KEY') || !privateKey.includes('END PRIVATE KEY')) {
-      console.error("Private key format appears incorrect - missing BEGIN/END markers");
-      throw new Error("Invalid private key format");
-    }
-    
-    // Create JWT client for service account
-    const auth = new google.auth.JWT({
-      email: credentials.client_email,
-      key: privateKey,
-      scopes: ['https://www.googleapis.com/auth/spreadsheets']
-    });
-
-    // Create and return the Sheets API client
-    return google.sheets({ version: 'v4', auth });
-  } catch (error) {
-    console.error("Error creating Sheets client:", error);
-    throw error;
-  }
-}
-
-async function ensureHeadersExist(sheets: any, spreadsheetId: string, sheetName: string = 'Sheet1') {
-  try {
-    // Check if sheet has data
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId,
-      range: `${sheetName}!A1:G1`,
-    });
-    
-    const existingValues = response.data.values;
-    
-    // If first row is empty or doesn't match headers, add headers
-    if (!existingValues || existingValues.length === 0 || 
-        JSON.stringify(existingValues[0]) !== JSON.stringify(ENQUIRY_COLUMN_HEADERS)) {
-      // Add headers
-      await sheets.spreadsheets.values.update({
-        spreadsheetId,
-        range: `${sheetName}!A1`,
-        valueInputOption: 'RAW',
-        requestBody: {
-          values: [ENQUIRY_COLUMN_HEADERS],
-        },
-      });
-    }
-  } catch (error) {
-    console.error("Error ensuring headers:", error);
-    // Continue anyway - headers might already exist
-  }
-}
+import dbConnect from "@/lib/mongoose";
+import Enquiry from "@/lib/models/Enquiry";
+import { requireAuth } from "@/lib/middleware/auth";
 
 export async function POST(request: NextRequest) {
   try {
+    // Authenticate user (optional - can be public or require auth)
+    // For now, we'll make it optional but can link to user if authenticated
+    const authResult = requireAuth(request, false);
+    const userId = authResult.user?.userId || undefined;
+
+    await dbConnect();
     const formData = await request.json();
 
-    // Get Google Sheet ID from environment variable
-    // Default to the same sheet used for admissions if ENQUIRY_GOOGLE_SHEET_ID is not set
-    const SPREADSHEET_ID = process.env.ENQUIRY_GOOGLE_SHEET_ID || "12CgHpE9x8TsuoosG3KctIbrM941N1eOCKmgLwPRTPbs";
-    // Get sheet tab name (defaults to 'enquiry-form', but can be overridden via env var)
-    // If your sheet tab has a different name, set ENQUIRY_SHEET_NAME in .env.local
-    const SHEET_NAME = process.env.ENQUIRY_SHEET_NAME || 'enquiry-form';
-
-    if (!SPREADSHEET_ID) {
+    // Validate required fields
+    if (!formData.childName || !formData.email || !formData.mobile || !formData.grade || !formData.boardingType) {
       return NextResponse.json(
-        { 
-          error: "Google Sheets configuration missing. Please set ENQUIRY_GOOGLE_SHEET_ID in your .env.local file." 
-        },
-        { status: 500 }
+        { error: "Missing required fields" },
+        { status: 400 }
       );
     }
 
-    // Get Sheets API client
-    const sheets = await getSheetsClient();
-
-    // Ensure headers exist (only runs if sheet is empty)
-    // Use the configured sheet name (defaults to 'Sheet1')
-    await ensureHeadersExist(sheets, SPREADSHEET_ID, SHEET_NAME);
-
-    // Format the data for Google Sheets
-    const rowData = [
-      new Date().toISOString(), // Timestamp
-      formData.childName || "",
-      formData.grade || "",
-      formData.boardingType || "",
-      formData.email || "",
-      formData.mobile || "",
-      formData.message || "",
-    ];
-
-    // Prepare the request body for Google Sheets API
-    const values = [rowData];
-
-    // Use Google Sheets API v4 to append data
-    const result = await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${SHEET_NAME}!A:A`,
-      valueInputOption: 'RAW',
-      requestBody: {
-        values: values,
-      },
+    // Create new enquiry in MongoDB
+    const enquiry = await Enquiry.create({
+      childName: formData.childName,
+      grade: formData.grade,
+      boardingType: formData.boardingType,
+      email: formData.email.toLowerCase(),
+      mobile: formData.mobile,
+      message: formData.message || '',
+      submittedBy: userId,
     });
 
     return NextResponse.json(
-      { 
-        success: true, 
+      {
+        success: true,
         message: "Enquiry submitted successfully",
-        result: result.data 
+        id: enquiry._id,
       },
       { status: 200 }
     );
   } catch (error) {
     console.error("Error submitting enquiry:", error);
     return NextResponse.json(
-      { error: "Internal server error", details: error instanceof Error ? error.message : "Unknown error" },
+      {
+        error: "Internal server error",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 }
     );
   }

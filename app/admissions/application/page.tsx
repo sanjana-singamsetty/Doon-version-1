@@ -405,9 +405,7 @@ function AdmissionsPageContent() {
     if (!formData.category) {
       newErrors.category = "Category is required";
     }
-    if (!formData.studentPhoto) {
-      newErrors.studentPhoto = "Student photo is required";
-    }
+    // Student photo is optional
 
     // Permanent address validation if different
     if (!formData.samePermanentAddress) {
@@ -469,9 +467,7 @@ function AdmissionsPageContent() {
     if (!formData.fatherProfession.trim()) {
       newErrors.fatherProfession = "Father&apos;s profession is required";
     }
-    if (!formData.fatherPhoto) {
-      newErrors.fatherPhoto = "Father&apos;s photo is required";
-    }
+    // Father photo is optional
 
     // Mother&apos;s details
     if (!formData.motherFullName.trim()) {
@@ -498,9 +494,7 @@ function AdmissionsPageContent() {
     if (!formData.motherProfession.trim()) {
       newErrors.motherProfession = "Mother&apos;s profession is required";
     }
-    if (!formData.motherPhoto) {
-      newErrors.motherPhoto = "Mother&apos;s photo is required";
-    }
+    // Mother photo is optional
 
     // Gross annual income
     if (!formData.grossAnnualIncome.trim()) {
@@ -542,18 +536,127 @@ function AdmissionsPageContent() {
     } else if (currentStep === "preview") {
       setIsSubmitting(true);
       try {
-        // Prepare data for submission (convert File objects to indicators)
-        const submissionData = {
+        // Get auth token from localStorage
+        let authToken = null;
+        if (typeof window !== 'undefined') {
+          authToken = localStorage.getItem('auth-token');
+        }
+
+        if (!authToken) {
+          alert("You must be logged in to submit the form. Please log in again.");
+          router.push("/admissions/login");
+          setIsSubmitting(false);
+          return;
+        }
+
+        // Upload images first and get URLs
+        const imageUrls: {
+          studentPhotoUrl?: string;
+          fatherPhotoUrl?: string;
+          motherPhotoUrl?: string;
+        } = {};
+
+        // Upload student photo (optional)
+        if (formData.studentPhoto) {
+          try {
+            const studentFormData = new FormData();
+            studentFormData.append("file", formData.studentPhoto);
+            studentFormData.append("category", "students");
+
+            const studentUploadResponse = await fetch("/api/upload/image", {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${authToken}`,
+              },
+              body: studentFormData,
+            });
+
+            if (studentUploadResponse.ok) {
+              const studentResult = await studentUploadResponse.json();
+              imageUrls.studentPhotoUrl = studentResult.url;
+            } else {
+              console.warn("Failed to upload student photo, continuing without it");
+            }
+          } catch (err) {
+            console.warn("Student photo upload error, continuing without it:", err);
+          }
+        }
+
+        // Upload father photo (optional)
+        if (formData.fatherPhoto) {
+          try {
+            const fatherFormData = new FormData();
+            fatherFormData.append("file", formData.fatherPhoto);
+            fatherFormData.append("category", "fathers");
+
+            const fatherUploadResponse = await fetch("/api/upload/image", {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${authToken}`,
+              },
+              body: fatherFormData,
+            });
+
+            if (fatherUploadResponse.ok) {
+              const fatherResult = await fatherUploadResponse.json();
+              imageUrls.fatherPhotoUrl = fatherResult.url;
+            } else {
+              console.warn("Failed to upload father photo, continuing without it");
+            }
+          } catch (err) {
+            console.warn("Father photo upload error, continuing without it:", err);
+          }
+        }
+
+        // Upload mother photo (optional)
+        if (formData.motherPhoto) {
+          try {
+            const motherFormData = new FormData();
+            motherFormData.append("file", formData.motherPhoto);
+            motherFormData.append("category", "mothers");
+
+            const motherUploadResponse = await fetch("/api/upload/image", {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${authToken}`,
+              },
+              body: motherFormData,
+            });
+
+            if (motherUploadResponse.ok) {
+              const motherResult = await motherUploadResponse.json();
+              imageUrls.motherPhotoUrl = motherResult.url;
+            } else {
+              console.warn("Failed to upload mother photo, continuing without it");
+            }
+          } catch (err) {
+            console.warn("Mother photo upload error, continuing without it:", err);
+          }
+        }
+
+        // Prepare submission data with image URLs (exclude File objects)
+        const submissionData: any = {
           ...formData,
-          studentPhoto: formData.studentPhoto ? "Uploaded" : null,
-          fatherPhoto: formData.fatherPhoto ? "Uploaded" : null,
-          motherPhoto: formData.motherPhoto ? "Uploaded" : null,
+          // Remove File objects - they can't be serialized to JSON
+          studentPhoto: undefined,
+          fatherPhoto: undefined,
+          motherPhoto: undefined,
+          // Add image URLs
+          studentPhotoUrl: imageUrls.studentPhotoUrl || "",
+          fatherPhotoUrl: imageUrls.fatherPhotoUrl || "",
+          motherPhotoUrl: imageUrls.motherPhotoUrl || "",
         };
+
+        // Clean up undefined values
+        delete submissionData.studentPhoto;
+        delete submissionData.fatherPhoto;
+        delete submissionData.motherPhoto;
 
         const response = await fetch("/api/admissions/submit", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${authToken}`,
           },
           body: JSON.stringify(submissionData),
         });
@@ -565,9 +668,9 @@ function AdmissionsPageContent() {
           if (typeof window !== 'undefined') {
             const dataToStore = {
               ...formData,
-              studentPhoto: formData.studentPhoto ? "Uploaded" : null,
-              fatherPhoto: formData.fatherPhoto ? "Uploaded" : null,
-              motherPhoto: formData.motherPhoto ? "Uploaded" : null,
+              studentPhoto: imageUrls.studentPhotoUrl || null,
+              fatherPhoto: imageUrls.fatherPhotoUrl || null,
+              motherPhoto: imageUrls.motherPhotoUrl || null,
             };
             localStorage.setItem("lastSubmittedApplication", JSON.stringify(dataToStore));
           }
@@ -579,7 +682,7 @@ function AdmissionsPageContent() {
         }
       } catch (error) {
         console.error("Error submitting form:", error);
-        alert("Failed to submit form. Please try again later.");
+        alert(error instanceof Error ? error.message : "Failed to submit form. Please try again later.");
       } finally {
         setIsSubmitting(false);
       }

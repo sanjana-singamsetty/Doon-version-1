@@ -272,7 +272,8 @@ export default function AdmissionsDashboardPage() {
                 {/* Dark Blue Section */}
                 <div className="bg-[#1C2C5B] p-6 sm:p-8">
                   <h3 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-white mb-6 text-center">
-                    Admission Application Form IB 2025-26
+                    Admission Application 
+                    <p>Form IB 2025-26</p>
                   </h3>
                   
                   {/* Apply Now Button */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, FormEvent, useState, useEffect } from "react";
+import { ChangeEvent, FormEvent, useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import "./AdmissionFlow.css";
@@ -162,7 +162,8 @@ type FormErrors = {
   [key in keyof FormState]?: string;
 };
 
-export default function AdmissionsPage() {
+// Inner component that uses useSearchParams
+function AdmissionsPageContent() {
   const router = useRouter();
   const [formData, setFormData] = useState<FormState>(initialFormState);
   const [currentStep, setCurrentStep] = useState<StepId>("student");
@@ -2039,5 +2040,20 @@ placeholder="Enter Nationality"
         </form>
       </section>
     </main>
+  );
+}
+
+// Default export with Suspense wrapper
+export default function AdmissionsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="text-lg text-gray-600">Loading...</div>
+        </div>
+      </div>
+    }>
+      <AdmissionsPageContent />
+    </Suspense>
   );
 }

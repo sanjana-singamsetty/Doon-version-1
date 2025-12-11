@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent, FormEvent, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import "./AdmissionFlow.css";
 import "./AdmissionFlowForm.css";
@@ -168,6 +168,7 @@ export default function AdmissionsPage() {
   const [currentStep, setCurrentStep] = useState<StepId>("student");
   const [errors, setErrors] = useState<FormErrors>({});
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [showInstructionsModal, setShowInstructionsModal] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [photoPreviews, setPhotoPreviews] = useState<{
     studentPhoto: string | null;
@@ -178,6 +179,16 @@ export default function AdmissionsPage() {
     fatherPhoto: null,
     motherPhoto: null,
   });
+
+  const searchParams = useSearchParams();
+
+  // Set board type from query parameter
+  useEffect(() => {
+    const boardParam = searchParams.get("board");
+    if (boardParam && (boardParam === "CBSE" || boardParam === "IB")) {
+      setFormData((prev) => ({ ...prev, board: boardParam }));
+    }
+  }, [searchParams]);
 
   const handleInputChange = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -545,8 +556,17 @@ export default function AdmissionsPage() {
         const result = await response.json();
 
         if (response.ok) {
-          // Redirect to thank you page
-          window.location.href = "/admissions/thank-you";
+          // Save submitted application data to localStorage for preview
+          const dataToStore = {
+            ...formData,
+            studentPhoto: formData.studentPhoto ? "Uploaded" : null,
+            fatherPhoto: formData.fatherPhoto ? "Uploaded" : null,
+            motherPhoto: formData.motherPhoto ? "Uploaded" : null,
+          };
+          localStorage.setItem("lastSubmittedApplication", JSON.stringify(dataToStore));
+          
+          // Redirect to dashboard page
+          router.push("/admissions/dashboard");
         } else {
           alert(`Error submitting form: ${result.error || "Unknown error"}`);
         }
@@ -591,6 +611,61 @@ export default function AdmissionsPage() {
 
   return (
     <main className="admission-flow-page">
+      {/* Instructions Modal */}
+      {showInstructionsModal && (
+        <div className="modal-overlay" onClick={() => setShowInstructionsModal(false)}>
+          <div className="modal-content instructions-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3 className="modal-title">Instructions</h3>
+            </div>
+            <div className="modal-body">
+              <div className="instructions-content">
+                <p className="instructions-intro">
+                  At Doon International School (DIS) Hyderabad, we are committed to nurturing young talents 
+                  while celebrating traditions. Our approach blends core Indian values with a global perspective, 
+                  ensuring that every child receives a well-rounded, holistic education.
+                </p>
+
+                <h4 className="instructions-subtitle">General Instructions while filling out the form:</h4>
+
+                <ol className="instructions-list">
+                  <li>
+                    Provide accurate and complete information about the student, including full name, date of 
+                    birth, gender, nationality, and contact details
+                  </li>
+                  <li>
+                    Provide information about the student&apos;s parents or guardians, including their names, 
+                    occupations, and contact details
+                  </li>
+                  <li>
+                    Grades 3 - 11 may require an entrance assessment or interview. We suggest a basic preparation 
+                    for interviews, assessments, or interactions that the school may require as part of the admission 
+                    process. Details will be provided after receiving the application.
+                  </li>
+                  <li>
+                    Pay the required non-refundable application fee, which is mentioned in the instructions. 
+                    Ensure you keep a record of the payment receipt.
+                  </li>
+                  <li>
+                    Once the admission decision is made, parents or guardians will be notified through email 
+                    or Telephone call
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button 
+                type="button" 
+                className="modal-button-close" 
+                onClick={() => setShowInstructionsModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Confirmation Modal */}
       {showConfirmModal && (
         <div className="modal-overlay" onClick={handleCancelConfirm}>

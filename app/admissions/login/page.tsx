@@ -1,15 +1,17 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import "../AdmissionsLogin.css";
 
 export default function AdmissionsLoginPage() {
-  const [showFlow, setShowFlow] = useState(false);
+  const router = useRouter();
 
   const handleLoginSuccess = (event?: FormEvent<HTMLFormElement>) => {
     if (event) event.preventDefault();
-    setShowFlow(true);
+    // Navigate to selection page after login
+    router.push("/admissions/select");
   };
 
   return (

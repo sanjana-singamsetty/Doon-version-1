@@ -16,7 +16,7 @@ const advantages = [
 export function WhyDisSection() {
   return (
     <section className="relative w-full bg-[#1e3a8a] overflow-hidden">
-      {/* Blurred Outdoor Scene at Top */}
+
       <div className="relative h-24 sm:h-32 md:h-40 overflow-hidden">
         <Image
           src="/images/campus-img.png"

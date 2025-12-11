@@ -640,15 +640,20 @@ textarea.error:focus {
   justify-content: center;
   z-index: 1000;
   padding: 1rem;
+  backdrop-filter: blur(4px);
+  overflow-y: auto;
 }
 
 .modal-content {
   background: #fff;
   border-radius: 1rem;
-  width: 100%;
+  width: 90%;
   max-width: 500px;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
   overflow: hidden;
+  margin: auto;
+  position: relative;
+  align-self: center;
 }
 
 .modal-header {
@@ -662,6 +667,10 @@ textarea.error:focus {
   font-size: 1.5rem;
   font-weight: 700;
   color: #ffe18c;
+}
+
+.instructions-modal .modal-title {
+  color: #fff;
 }
 
 .modal-body {
@@ -778,6 +787,96 @@ textarea.error:focus {
   .modal-button-confirm {
     width: 100%;
   }
+}
+
+/* Instructions Modal Specific Styles */
+.instructions-modal .modal-content {
+  max-width: 696px;
+  width: 696px;
+  height: 774px;
+  margin: auto;
+  position: relative;
+  align-self: center;
+}
+
+.instructions-content {
+  color: #0f1b3f;
+  line-height: 1.6;
+}
+
+.instructions-intro {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: #475569;
+}
+
+.instructions-subtitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1c2c5b;
+  margin: 1.5rem 0 1rem 0;
+}
+
+.instructions-list {
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+  color: #0f1b3f;
+}
+
+.instructions-list li {
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.modal-button-close {
+  width: 100%;
+  border: none;
+  background: #E5B93C;
+  color: #1c2c5b;
+  padding: 0.95rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-button-close:hover {
+  background: #F4C23F;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .instructions-modal .modal-content {
+    max-width: calc(100% - 2rem);
+    width: calc(100% - 2rem);
+    height: auto;
+    max-height: 90vh;
+    margin: auto;
+  }
+  
+  .instructions-list {
+    padding-left: 1.25rem;
+  }
+  
+  .instructions-list li {
+    font-size: 0.9rem;
+  }
+  
+  .modal-overlay {
+    padding: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Preview Modal Styles */
+.preview-modal-content {
+  max-width: 900px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 /* Preview Section Styles */

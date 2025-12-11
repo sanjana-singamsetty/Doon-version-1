@@ -118,12 +118,12 @@ export default function AboutPage() {
             viewport={{ once: true, amount: 0.2 }}
           >
             {/* Title */}
-            <motion.h2
-              variants={item}
+              <motion.h2
+                variants={item}
               className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-[#1C2C5B] mb-12 md:mb-16"
-            >
+              >
               The Doon International Network
-            </motion.h2>
+              </motion.h2>
 
             {/* Main Content: Image + Text Panel */}
             <motion.div
@@ -132,14 +132,14 @@ export default function AboutPage() {
             >
               {/* Left Side: Image (60% = 3/5) */}
               <div className="lg:col-span-3 relative h-64 sm:h-80 md:h-96 lg:h-[500px]">
-                <Image
+                  <Image
                   src="/images/doon-old.png"
                   alt="Doon International School building"
-                  fill
-                  className="object-cover"
+                    fill
+                    className="object-cover"
                   priority={false}
-                />
-              </div>
+                  />
+                </div>
 
               {/* Right Side: Text Panel (40% = 2/5) */}
               <div className="lg:col-span-2 bg-[#1C2C5B] p-8 md:p-10 lg:p-12 flex flex-col justify-center">
